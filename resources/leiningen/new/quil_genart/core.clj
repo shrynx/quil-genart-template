@@ -3,7 +3,7 @@
             [clj-jgit.porcelain :as git]
             [clj-jgit.querying :as gitq]
             [sketch.dynamic :as dynamic]
-            [sketch.config :refer [main-width main-height draw-count]])
+            [sketch.config :refer [main-width main-height draw-count random-seed-gen noise-seed-gen draw-svg?]])
   (:gen-class))
 
 (def ^{:private true} git-repo (try
@@ -13,32 +13,43 @@
                                    (git/load-repo "."))))
 
 (defn- draw-commit-save []
-  (let [time-stamp  (quot (System/currentTimeMillis) 1000)
+  (let [curr-time   (System/currentTimeMillis)
+        time-stamp  (.toString (java.util.Date.))
         commit-hash (subs ((gitq/commit-info git-repo
                                              (let [commit-message (str time-stamp)]
                                                (git/git-add git-repo ".")
                                                (git/git-commit git-repo commit-message))) :id) 0 8)]
     (doseq [img-num (range draw-count)]
-      (let [cur-time   (System/currentTimeMillis)
-            seed       (System/nanoTime)
-            noise-seed (* (rand) 10000)]
-        (println "setting seed to:" seed "and noise seed to:" noise-seed)
-        (q/random-seed seed)
+      (let [random-seed (random-seed-gen)
+            noise-seed (noise-seed-gen)
+            img-filename (str "artworks/" curr-time "-" time-stamp "-" commit-hash "/img-" img-num "-{ seed: " random-seed " }-{ noise-seed: " noise-seed " }." (if draw-svg? "svg" "png"))]
+        (println "setting seed to:" random-seed "and noise seed to:" noise-seed)
+        (q/random-seed random-seed)
         (q/noise-seed noise-seed)
         (try
-          (dynamic/draw)
+          (if draw-svg?
+            (do
+              (q/do-record (q/create-graphics main-width main-height :svg img-filename)
+                           (dynamic/draw))
+              (println "gen time:" (/ (- (System/currentTimeMillis) curr-time) 1000.0) "s")
+              (println "done saving" img-filename))
+            (do
+              (dynamic/draw)
+              (q/save img-filename)
+              (println "gen time:" (/ (- (System/currentTimeMillis) curr-time) 1000.0) "s")
+              (println "done saving" img-filename)))
           (catch Throwable t
-            (println "Exception in draw function:" t)))
-        (println "gen time:" (/ (- (System/currentTimeMillis) cur-time) 1000.0) "s")
-        (let [img-filename (str "artworks/" time-stamp "-" commit-hash "/img-" img-num "-{ seed: " seed "}-{ noise-seed: " noise-seed "}.png")]
-          (q/save img-filename)
-          (println "done saving" img-filename))))))
+            (println "Exception in draw function:" t)))))))
 
+
+; (defn -main []
 (q/defsketch artwork
   :title "sketch"
   :setup dynamic/setup
   :draw draw-commit-save
-  :size [main-width main-height])
+  :size [main-width main-height]
+  :renderer :java2d)
+  ; )
 
 (defn refresh []
   (use :reload 'sketch.dynamic)

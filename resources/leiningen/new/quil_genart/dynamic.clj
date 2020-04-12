@@ -20,4 +20,7 @@
             :start-x cfg/start-x
             :start-y cfg/start-y
             :scale cfg/scale})
-  (q/translate cfg/start-x cfg/start-y))
+  (q/push-matrix)
+  (q/translate cfg/start-x cfg/start-y)
+  ;; start here
+  (q/pop-matrix))
