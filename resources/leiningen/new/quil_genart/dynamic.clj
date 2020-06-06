@@ -21,6 +21,8 @@
             :start-y cfg/start-y
             :scale cfg/scale})
   (q/push-matrix)
-  (q/translate cfg/start-x cfg/start-y)
-  ;; start here
+  (q/scale cfg/scale cfg/scale)
+  (q/with-translation [cfg/start-x cfg/start-y]
+  ;  start here
+    )
   (q/pop-matrix))

@@ -1,9 +1,9 @@
 (ns sketch.config)
 
 (def ^{:private true} config {:width 800
-                              :height 800
-                              :scale 1
-                              :margin-percentage 10
+                              :height 1200
+                              :scale 8
+                              :margin-percentage 15
                               :draw-count 1
                               :draw-svg? false})
 
@@ -13,15 +13,17 @@
 (defn- adjusted-pos [dimension]
   (/ (* dimension (config :margin-percentage)) 200))
 
-(def main-width (apply * (map config [:scale :width])))
-(def main-height (apply * (map config [:scale :height])))
-(def start-x (adjusted-pos main-width))
-(def start-y (adjusted-pos main-height))
-(def width (adjusted-dimension main-width))
-(def height (adjusted-dimension main-height))
+(def scale (config :scale))
+(def base-width (config :width))
+(def base-height (config :height))
+(def window-width (* scale base-width))
+(def window-height (* scale base-height))
+(def start-x (adjusted-pos base-width))
+(def start-y (adjusted-pos base-height))
+(def width (adjusted-dimension base-width))
+(def height (adjusted-dimension base-height))
 (def end-x (+ start-x width))
 (def end-y (+ start-y height))
-(def scale (config :scale))
 (def draw-count (config :draw-count))
 (def draw-svg? (config :draw-svg?))
 (defn random-seed-gen [] (rand-int 100000))

@@ -3,7 +3,7 @@
             [clj-jgit.porcelain :as git]
             [clj-jgit.querying :as gitq]
             [sketch.dynamic :as dynamic]
-            [sketch.config :refer [main-width main-height draw-count random-seed-gen noise-seed-gen draw-svg?]])
+            [sketch.config :refer [window-width window-height draw-count random-seed-gen noise-seed-gen draw-svg?]])
   (:gen-class))
 
 (def ^{:private true} git-repo (try
@@ -29,7 +29,7 @@
         (try
           (if draw-svg?
             (do
-              (q/do-record (q/create-graphics main-width main-height :svg img-filename)
+              (q/do-record (q/create-graphics window-width window-height :svg img-filename)
                            (dynamic/draw))
               (println "gen time:" (/ (- (System/currentTimeMillis) curr-time) 1000.0) "s")
               (println "done saving" img-filename))
@@ -41,15 +41,14 @@
           (catch Throwable t
             (println "Exception in draw function:" t)))))))
 
-
-; (defn -main []
+;; (defn -main []
 (q/defsketch artwork
   :title "sketch"
   :setup dynamic/setup
   :draw draw-commit-save
-  :size [main-width main-height]
+  :size [window-width window-height]
   :renderer :java2d)
-  ; )
+  ;; )
 
 (defn refresh []
   (use :reload 'sketch.dynamic)
