@@ -1,8 +1,9 @@
-(ns sketch.core
+(ns sketch.run
+  {:clj-kondo/config '{:lint-as {quil.core/defsketch clojure.core/def}}}
   (:require [quil.core :as q]
             [clj-jgit.porcelain :as git]
             [clj-jgit.querying :as gitq]
-            [sketch.dynamic :as dynamic]
+            [sketch :as sketch]
             [sketch.config :refer [window-width window-height draw-count random-seed-gen noise-seed-gen draw-svg?]])
   (:gen-class))
 
@@ -30,29 +31,24 @@
           (if draw-svg?
             (do
               (q/do-record (q/create-graphics window-width window-height :svg img-filename)
-                           (dynamic/draw))
+                           (sketch/draw))
               (println "gen time:" (/ (- (System/currentTimeMillis) curr-time) 1000.0) "s")
               (println "done saving" img-filename))
             (do
-              (dynamic/draw)
+              (sketch/draw)
               (q/save img-filename)
               (println "gen time:" (/ (- (System/currentTimeMillis) curr-time) 1000.0) "s")
               (println "done saving" img-filename)))
           (catch Throwable t
             (println "Exception in draw function:" t)))))))
 
-;; (defn -main []
-(q/defsketch artwork
-  :title "sketch"
-  :setup dynamic/setup
-  :draw draw-commit-save
-  :size [window-width window-height]
-  :renderer :java2d)
-  ;; )
-
-(defn refresh []
-  (use :reload 'sketch.dynamic)
-  (.redraw artwork))
-
-(defn get-applet []
-  artwork)
+(defn -main []
+  (q/defsketch artwork
+    :title "sketch"
+    :setup sketch/setup
+    :draw draw-commit-save
+    :size [window-width window-height]
+    :features [:exit-on-close]
+    :settings #(do
+                (q/pixel-density 2)
+                (q/smooth 8))))

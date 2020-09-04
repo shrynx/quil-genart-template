@@ -7,3 +7,7 @@ lein template for generative art with quil.
 ```sh
 lein new quil-genart *name*
 ```
+
+## Prerequisite
+
+install Oracle JVM 1.8

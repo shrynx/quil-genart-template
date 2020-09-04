@@ -1,0 +1,8 @@
+{:width 1200
+ :height 800
+ :scale 1
+ :margin-percentage 10
+ :draw-count 1
+ :draw-svg? false
+ :random-seed :random
+ :noise-seed :random}

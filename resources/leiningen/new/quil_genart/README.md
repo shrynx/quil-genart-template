@@ -3,5 +3,5 @@
 ## Usage
 
 ```sh
-sketch.core => (refresh)
+sketch.dev => (refresh)
 ```
