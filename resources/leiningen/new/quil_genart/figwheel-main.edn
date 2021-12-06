@@ -1,0 +1,2 @@
+{:target-dir "resources"
+ :ring-handler sketch.modes.internal/ring-handler}

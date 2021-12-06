@@ -1,0 +1,9 @@
+{:width 1200
+ :height 800
+ :unit :px
+ :renderer :java2d
+ :scale 1
+ :margin-percentage 10
+ :draw-count 1
+ :random-seed :random
+ :noise-seed :random}
