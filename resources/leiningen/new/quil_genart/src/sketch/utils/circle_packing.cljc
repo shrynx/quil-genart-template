@@ -15,8 +15,11 @@
   [arg]
   (if (fn? arg) (arg) arg))
 
-(defn max-bound [x1 y1 x2 y2]
+(defn max-bound-rect [x1 y1 x2 y2]
   {:nw {:x x1 :y y1} :se {:x x2 :y y2}})
+
+(defn max-bound-circle [[x y] r] 
+  {:nw {:x (- x r) :y (- y r)} :se {:x (+ x r) :y (+ y r)}})
 
 (defn make-circle
   "given center as 2d vec and radius generate a circle"
@@ -120,7 +123,7 @@
                   :padding 0
                   :random-sampler #(random-in-rect random-range 0 0 100 100)
                   :in-bounds? (partial in-bound-rect? 0 0 100 100)
-                  :max-bound (max-bound 0 0 100 100)})
+                  :max-bound (max-bound-rect 0 0 100 100)})
 
 (defn gen-packed-circles-with-tree
   ([]
@@ -164,7 +167,7 @@
     :padding 0
     :random-sampler #(random-in-rect random-range 0 0 100 100)
     :in-bounds? (partial in-bound-rect? 0 0 100 100)}
-    :max-bound (max-bound 0 0 100 100)
+    :max-bound (max-bound-rect 0 0 100 100)
    "
   ([]
    (gen-packed-circles base-config))
