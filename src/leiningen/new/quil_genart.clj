@@ -26,6 +26,8 @@
              ["src/sketch/utils/algebra.cljc" (render "src/sketch/utils/algebra.cljc" data)]
              ["src/sketch/utils/curves.cljc" (render "src/sketch/utils/curves.cljc" data)]
              ["src/sketch/utils/color.cljc" (render "src/sketch/utils/color.cljc" data)]
+             ["src/sketch/utils/quadtree.cljc" (render "src/sketch/utils/quadtree.cljc" data)]
+             ["src/sketch/utils/circle_packing.cljc" (render "src/sketch/utils/circle_packing.cljc" data)]
              ["resources/public/index.html" (render "resources/public/index.html" data)]
              ["figwheel-main.edn" (render "figwheel-main.edn" data)]
              ["sketch.cljs.edn" (render "sketch.cljs.edn" data)])))
