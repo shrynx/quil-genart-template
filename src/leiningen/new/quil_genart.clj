@@ -1,11 +1,11 @@
 (ns leiningen.new.quil-genart
   (:require [leiningen.new.templates :refer [renderer name-to-path ->files]]
-            [leiningen.core.main :as main]))
+            [leiningen.core.main :as main]
+            [clojure.java.shell :as sh]))
 
 (def render (renderer "quil-genart"))
 
-(defn quil-genart
-  [name]
+(defn quil-genart [name]
   (let [data {:name      name
               :sanitized (name-to-path name)}]
     (main/info "Generating fresh quil-genart project.")
@@ -30,4 +30,6 @@
              ["src/sketch/utils/circle_packing.cljc" (render "src/sketch/utils/circle_packing.cljc" data)]
              ["resources/public/index.html" (render "resources/public/index.html" data)]
              ["figwheel-main.edn" (render "figwheel-main.edn" data)]
-             ["sketch.cljs.edn" (render "sketch.cljs.edn" data)])))
+             ["sketch.cljs.edn" (render "sketch.cljs.edn" data)]
+             ["move_download_files.clj" (render "move_download_files.clj" data)]))
+  (sh/sh "chmod" "+x" (str name "/move_download_files.clj")))

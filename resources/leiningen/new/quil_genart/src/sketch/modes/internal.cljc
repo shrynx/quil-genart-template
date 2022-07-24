@@ -7,7 +7,9 @@
             #?@(:clj
                 [[clj-jgit.porcelain :as git]
                  [clj-jgit.querying :as gitq]
-                 [clojure.java.shell :as shell]])))
+                 [clojure.java.shell :as shell]])
+            #?@(:cljs
+                [[tick.locale-en-us]])))
 
 #?(:clj
    (defonce ^:private git-repo (try
@@ -44,7 +46,7 @@
 
 (defn draw-save []
   #?(:clj
-     (let [time-stamp  (t/format (t/inst))
+     (let [time-stamp  (t/format (t/formatter "yyyy-mm-dd hh:mm:ss") (t/zoned-date-time))
            commit-hash (git-commit-hash time-stamp)]
        (doseq [img-num (range cfg/draw-count)]
          (let [start-time   (t/inst)
@@ -83,7 +85,7 @@
              (catch Exception e
                (println "Exception in draw function:" e))))))
      :cljs
-     (let [time-stamp  (t/format (t/inst))
+     (let [time-stamp  (t/format (t/formatter "yyyy-mm-dd hh:mm:ss") (t/zoned-date-time))
            commit-hash (cfg/get-config-val :commit-hash)]
        (doseq [img-num (range cfg/draw-count)]
          (let [start-time   (t/now)
