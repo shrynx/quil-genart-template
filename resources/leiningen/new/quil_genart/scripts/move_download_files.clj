@@ -1,5 +1,5 @@
 #!/usr/bin/env bb
-(ns move-download-files
+(ns scripts.move-download-files
   (:require
    [babashka.fs :as fs]
    [clojure.string :as str]))

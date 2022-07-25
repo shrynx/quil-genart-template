@@ -31,5 +31,5 @@
              ["resources/public/index.html" (render "resources/public/index.html" data)]
              ["figwheel-main.edn" (render "figwheel-main.edn" data)]
              ["sketch.cljs.edn" (render "sketch.cljs.edn" data)]
-             ["move_download_files.clj" (render "move_download_files.clj" data)]))
-  (sh/sh "chmod" "+x" (str name "/move_download_files.clj")))
+             ["scripts/move_download_files.clj" (render "scripts/move_download_files.clj" data)]))
+  (sh/sh "chmod" "+x" (str name "/" "scripts/move_download_files.clj")))

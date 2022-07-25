@@ -46,7 +46,7 @@
 
 (defn draw-save []
   #?(:clj
-     (let [time-stamp  (t/format (t/formatter "yyyy-mm-dd hh:mm:ss") (t/zoned-date-time))
+     (let [time-stamp  (t/format (t/formatter "yyyy-MM-dd hh:mm:ss") (t/zoned-date-time))
            commit-hash (git-commit-hash time-stamp)]
        (doseq [img-num (range cfg/draw-count)]
          (let [start-time   (t/inst)
@@ -85,7 +85,7 @@
              (catch Exception e
                (println "Exception in draw function:" e))))))
      :cljs
-     (let [time-stamp  (t/format (t/formatter "yyyy-mm-dd hh:mm:ss") (t/zoned-date-time))
+     (let [time-stamp  (t/format (t/formatter "yyyy-MM-dd hh:mm:ss") (t/zoned-date-time))
            commit-hash (cfg/get-config-val :commit-hash)]
        (doseq [img-num (range cfg/draw-count)]
          (let [start-time   (t/now)
