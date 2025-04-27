@@ -4,7 +4,7 @@
 
 > CLJ
 
-calva repl -> Leiningen -> draw / animate / print
+lein draw / animate
 
 ```sh
 sketch.modes.draw => (refresh)
@@ -12,7 +12,7 @@ sketch.modes.draw => (refresh)
 
 > CLJS
 
-calva repl -> Leiningen + Figwheel Main -> browser
+lein browser
 
 ## Scripts
 

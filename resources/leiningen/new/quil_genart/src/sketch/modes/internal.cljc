@@ -5,38 +5,34 @@
             [sketch.utils.common :as c]
             [tick.core :as t]
             #?@(:clj
-                [[clj-jgit.porcelain :as git]
-                 [clj-jgit.querying :as gitq]
-                 [clojure.java.shell :as shell]])
+                [[clojure.java.shell :refer [sh]]])
             #?@(:cljs
                 [[tick.locale-en-us]])))
 
 #?(:clj
-   (defonce ^:private git-repo (try
-                                 (git/load-repo ".")
-                                 (catch Exception _
-                                   (git/git-init)
-                                   (git/load-repo ".")))))
+   (defn git-init []
+     (let [{:keys [exit]} (sh "git" "rev-parse" "--is-inside-work-tree")]
+       (when (not= exit 0)
+         (sh "git" "init")))))
+
 #?(:clj
    (defn git-commit-hash [message]
-     (git/git-add git-repo ".")
-     (let [files-changed? (->> git-repo
-                               git/git-status
-                               vals
-                               (every? empty?)
-                               not)
-           commit (if files-changed?
-                    (git/git-commit git-repo (str message))
-                    (->> git-repo
-                         git/git-log
-                         first
-                         :id))
-           commit-hash (-> git-repo
-                           (gitq/commit-info commit)
-                           :id
-                           (subs 0 8))]
-       commit-hash)))
-
+     ;; Ensure repo is initialized
+     (git-init)
+     ;; Stage all changes
+     (sh "git" "add" ".")
+     ;; Check for any changes to commit
+     (let [{:keys [out]} (sh "git" "status" "--porcelain")
+           files-changed? (not (clojure.string/blank? out))]
+       (if files-changed?
+         (do
+           ;; Commit changes
+           (sh "git" "commit" "-m" message))
+         ;; No changes, do nothing
+         nil))
+     ;; Get latest commit hash
+     (let [{:keys [out]} (sh "git" "rev-parse" "--short" "HEAD")]
+       (clojure.string/trim out))))
 
 (def renderer
   #?(:clj (if (c/in? [:svg :pdf] cfg/renderer)
@@ -46,7 +42,7 @@
 
 (defn draw-save []
   #?(:clj
-     (let [time-stamp  (t/format (t/formatter "yyyy-MM-dd hh:mm:ss") (t/zoned-date-time))
+     (let [time-stamp  (t/format (t/inst))
            commit-hash (git-commit-hash time-stamp)]
        (doseq [img-num (range cfg/draw-count)]
          (let [start-time   (t/inst)
@@ -64,7 +60,7 @@
                                 (sketch/draw)))
                  (try
                    (println "optimising svg")
-                   (shell/sh "svgo" img-filename)
+                   (sh "svgo" img-filename)
                    (catch Exception _))
                  (println "gen time:" (t/between start-time (t/now)))
                  (println "done saving" img-filename))
@@ -85,7 +81,7 @@
              (catch Exception e
                (println "Exception in draw function:" e))))))
      :cljs
-     (let [time-stamp  (t/format (t/formatter "yyyy-MM-dd hh:mm:ss") (t/zoned-date-time))
+     (let [time-stamp  (t/format (t/inst))
            commit-hash (cfg/get-config-val :commit-hash)]
        (doseq [img-num (range cfg/draw-count)]
          (let [start-time   (t/now)

@@ -14,3 +14,13 @@ pom.xml.asc
 .clj-kondo/
 artworks
 /resources/public/cljs-out
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml

@@ -13,3 +13,9 @@ pom.xml.asc
 .clj-kondo/
 *.DS_Store
 *.calva/
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv

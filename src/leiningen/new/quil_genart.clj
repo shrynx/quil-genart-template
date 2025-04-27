@@ -11,6 +11,10 @@
     (main/info "Generating fresh quil-genart project.")
     (->files data
              [".gitignore" (render "gitignore" data)]
+             [".envrc" (render "envrc" data)]
+             ["devenv.lock" (render "devenv.lock" data)]
+             ["devenv.nix" (render "devenv.nix" data)]
+             ["devenv.yaml" (render "devenv.yaml" data)]
              ["README.md" (render "README.md" data)]
              ["project.clj" (render "project.clj" data)]
              ["config.edn" (render "config.edn" data)]
